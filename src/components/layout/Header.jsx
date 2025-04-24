@@ -1,8 +1,10 @@
 import React from "react";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
   const { isSignedIn } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <header className="flex justify-between items-center mb-6 mx-8 mt-3">
@@ -27,10 +29,16 @@ export default function Header() {
           </>
         ) : (
           <div className="space-x-4">
-            <button className="text-green-700 border border-green-600 hover:bg-green-50 hover:text-green-800 transition-colors px-4 py-2 rounded-md cursor-pointer">
+            <button
+              className="text-green-700 border border-green-600 hover:bg-green-50 hover:text-green-800 transition-colors px-4 py-2 rounded-md cursor-pointer"
+              onClick={() => navigate("/signin")}
+            >
               Sign In
             </button>
-            <button className="bg-green-600 text-white hover:bg-green-700 hover:shadow-md transition-all px-4 py-2 rounded-md cursor-pointer">
+            <button
+              className="bg-green-600 text-white hover:bg-green-700 hover:shadow-md transition-all px-4 py-2 rounded-md cursor-pointer"
+              onClick={() => navigate("/signup")}
+            >
               Sign Up
             </button>
           </div>

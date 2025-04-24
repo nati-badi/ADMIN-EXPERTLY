@@ -4,12 +4,14 @@ import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import Users from "./pages/Users";
 import Settings from "./pages/Settings";
-
 import Consultations from "./pages/Consultations";
 import Professionals from "./pages/Professionals";
 import Payments from "./pages/Payments";
 import Conflicts from "./pages/Conflicts";
 import Analytics from "./pages/Analytics";
+
+import Signup from "./auth/Signup";
+import Signin from "./auth/Signin";
 
 const routes = () => [
   {
@@ -33,6 +35,14 @@ const routes = () => [
   {
     path: "*",
     element: <NotFound />,
+  },
+  {
+    path: "/signup",
+    element: <Signup />,
+  },
+  {
+    path: "/signin",
+    element: <Signin />,
   },
 ];
 
