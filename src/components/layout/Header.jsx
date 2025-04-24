@@ -1,6 +1,9 @@
 import React from "react";
+import { useAuth } from "../../context/AuthContext";
 
-export default function Header({ isSignedIn }) {
+export default function Header() {
+  const { isSignedIn } = useAuth();
+
   return (
     <header className="flex justify-between items-center mb-6 mx-8 mt-3">
       <div>
@@ -20,7 +23,7 @@ export default function Header({ isSignedIn }) {
               alt="Profile"
               className="w-10 h-10 rounded-full object-cover"
             />
-            <span>Mr. Admin</span>
+            <span className="text-gray-400 font-bold">Mr. Admin</span>
           </>
         ) : (
           <div className="space-x-4">

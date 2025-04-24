@@ -1,7 +1,10 @@
 import { Card, CardContent } from "../components/ui/card";
 import { MessageSquare, AlertTriangle, CreditCard } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 export default function Dashboard() {
+  const { isSignedIn } = useAuth();
+
   return (
     <div className="grid grid-cols-3 gap-4 mb-8">
       <Card>
@@ -9,7 +12,11 @@ export default function Dashboard() {
           <MessageSquare className="text-green-600" />
           <div>
             <p className="font-semibold">Consultations</p>
-            <p className="text-lg text-gray-700">234,345</p>
+            {isSignedIn ? (
+              <p className="text-lg text-gray-700">234,345</p>
+            ) : (
+              <p className="text-lg text-gray-700">0</p>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -19,7 +26,11 @@ export default function Dashboard() {
           <AlertTriangle className="text-green-600" />
           <div>
             <p className="font-semibold">Conflicts</p>
-            <p className="text-lg text-gray-700">56</p>
+            {isSignedIn ? (
+              <p className="text-lg text-gray-700">56</p>
+            ) : (
+              <p className="text-lg text-gray-700">0</p>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -29,7 +40,11 @@ export default function Dashboard() {
           <CreditCard className="text-green-600" />
           <div>
             <p className="font-semibold">Payments</p>
-            <p className="text-lg text-gray-700">$1,283</p>
+            {isSignedIn ? (
+              <p className="text-lg text-gray-700">$1,283</p>
+            ) : (
+              <p className="text-lg text-gray-700">0</p>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -38,9 +53,15 @@ export default function Dashboard() {
         <Card>
           <CardContent className="p-6">
             <h3 className="text-lg font-semibold mb-2">Earnings Status</h3>
-            <div className="h-64 bg-gray-100 rounded-md flex items-center justify-center text-gray-400">
-              Earnings Graph Placeholder
-            </div>
+            {isSignedIn ? (
+              <div className="h-64 bg-gray-100 rounded-md flex items-center justify-center text-gray-400">
+                Earnings Graph Placeholder
+              </div>
+            ) : (
+              <div className="h-64 bg-gray-100 rounded-md flex items-center justify-center text-gray-400">
+                <p>Please sign in to view earnings graph.</p>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

@@ -11,7 +11,7 @@ import Payments from "./pages/Payments";
 import Conflicts from "./pages/Conflicts";
 import Analytics from "./pages/Analytics";
 
-const routes = [
+const routes = () => [
   {
     path: "/",
     element: <Navigate to="/dashboard" />,

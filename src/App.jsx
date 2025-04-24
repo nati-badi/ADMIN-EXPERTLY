@@ -1,23 +1,18 @@
+// App.jsx
 import { useState } from "react";
 import { useRoutes } from "react-router-dom";
 import routes from "./routes";
+import { AuthContext } from "./context/AuthContext";
 
 function App() {
-  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(true);
+  const routeElements = useRoutes(routes(isSignedIn));
 
-  const routeElements = useRoutes(
-    routes.map((route) => {
-      if (route.element && route.element.type?.name === "AdminLayout") {
-        return {
-          ...route,
-          element: <route.element.type isSignedIn={isSignedIn} />,
-        };
-      }
-      return route;
-    })
+  return (
+    <AuthContext.Provider value={{ isSignedIn, setIsSignedIn }}>
+      {routeElements}
+    </AuthContext.Provider>
   );
-
-  return routeElements;
 }
 
 export default App;
