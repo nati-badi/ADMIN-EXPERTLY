@@ -1,26 +1,35 @@
-import React, { useState } from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
+import * as z from "zod";
+
+// Schema
+const signinSchema = z.object({
+  email: z.string().email("Invalid email"),
+  password: z.string().min(6, "Minimum 6 characters"),
+  rememberMe: z.boolean().optional(),
+});
 
 const Signin = () => {
   const navigate = useNavigate();
-  const [credentials, setCredentials] = useState({
-    email: "",
-    password: "",
-    rememberMe: false,
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(signinSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      rememberMe: false,
+    },
   });
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setCredentials({
-      ...credentials,
-      [name]: type === "checkbox" ? checked : value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
     try {
-      // Simulated sign-in
+      // Simulated login
       navigate("/dashboard");
     } catch (error) {
       console.error("Signin failed:", error);
@@ -33,7 +42,7 @@ const Signin = () => {
         <h2 className="text-3xl font-bold text-green-600 text-center mb-8">
           Sign In
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Email */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -41,12 +50,16 @@ const Signin = () => {
             </label>
             <input
               type="email"
-              name="email"
-              value={credentials.email}
-              onChange={handleChange}
-              className="input-style border-gray-300 focus:border-green-500 focus:ring-green-500 rounded-sm shadow-sm focus:outline-none p-1 pl-2 w-full"
-              required
+              {...register("email")}
+              className={`input-style w-full p-1 pl-2 border rounded-sm shadow-sm focus:outline-none focus:ring-green-500 ${
+                errors.email ? "border-red-500" : "border-gray-300"
+              }`}
             />
+            {errors.email && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
           {/* Password */}
@@ -56,22 +69,24 @@ const Signin = () => {
             </label>
             <input
               type="password"
-              name="password"
-              value={credentials.password}
-              onChange={handleChange}
-              className="input-style border-gray-300 focus:border-green-500 focus:ring-green-500 rounded-sm shadow-sm focus:outline-none p-1 pl-2 w-full"
-              required
+              {...register("password")}
+              className={`input-style w-full p-1 pl-2 border rounded-sm shadow-sm focus:outline-none focus:ring-green-500 ${
+                errors.password ? "border-red-500" : "border-gray-300"
+              }`}
             />
+            {errors.password && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.password.message}
+              </p>
+            )}
           </div>
 
-          {/* Remember Me & Forgot Password */}
+          {/* Remember me + Forgot password */}
           <div className="flex items-center justify-between">
             <label className="flex items-center text-sm text-gray-600">
               <input
                 type="checkbox"
-                name="rememberMe"
-                checked={credentials.rememberMe}
-                onChange={handleChange}
+                {...register("rememberMe")}
                 className="mr-2 accent-green-600"
               />
               Remember me
