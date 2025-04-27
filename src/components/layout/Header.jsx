@@ -7,7 +7,7 @@ export default function Header() {
   const navigate = useNavigate();
 
   return (
-    <header className="flex justify-between items-center mb-6 mx-8 mt-3">
+    <header className="flex justify-between items-center mx-8 mt-3">
       <div>
         <h2 className="text-3xl font-bold">
           Hi,{" "}

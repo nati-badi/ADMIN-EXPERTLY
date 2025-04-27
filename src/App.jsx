@@ -5,7 +5,7 @@ import routes from "./routes";
 import { AuthContext } from "./context/AuthContext";
 
 function App() {
-  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(true);
   const routeElements = useRoutes(routes(isSignedIn));
 
   return (
