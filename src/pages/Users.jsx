@@ -1,42 +1,67 @@
 import React, { useState, useEffect } from "react";
+// import axios from "../api/axios"; // your axios instance
+import axios from "axios"; // for testing purposes, use the default axios instance
 
 const Users = () => {
-  const [userType, setUserType] = useState("clients");
+  // State variables
+  const [userType, setUserType] = useState("client"); // singular
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Debounce search input
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedSearch(search);
-    }, 500); // 500ms delay
+  // Base URL for API requests
+  // const baseUrl = import.meta.env.VITE_BASE_URL; // e.g., https://expertly-zxb1.onrender.com/api/v1
 
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [search]);
+  // console.log(baseUrl);
 
-  // Fetch users
-  useEffect(() => {
-    const fetchUsers = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(
-          `/api/users?role=${userType.slice(0, -1)}&search=${debouncedSearch}`
-        );
-        const data = await response.json();
-        setUsers(data.users);
-      } catch (error) {
-        console.error("Failed to fetch users:", error);
-      } finally {
-        setLoading(false);
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `https://expertly-zxb1.onrender.com/api/v1/${userType}`
+      );
+
+      console.log("Response:", response.data); // this time you will see JSON, not HTML!
+
+      const data = response.data;
+
+      if (userType === "client") {
+        setUsers(data.data.clients || []);
+      } else if (userType === "expert") {
+        setUsers(data.data.experts || []);
       }
-    };
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchUsers();
-  }, [userType, debouncedSearch]);
+  }, [userType]);
+
+  const handleView = (user) => {
+    console.log("Viewing user:", user);
+  };
+
+  const handleBan = async (id) => {
+    try {
+      await axios.patch(`/${userType}/${id}/ban`);
+      fetchUsers(); // refresh list
+    } catch (error) {
+      console.error("Failed to ban user:", error);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`/${userType}/${id}`);
+      fetchUsers(); // refresh list
+    } catch (error) {
+      console.error("Failed to delete user:", error);
+    }
+  };
 
   return (
     <div className="p-6">
@@ -49,9 +74,9 @@ const Users = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 space-y-4 md:space-y-0">
         <div className="flex space-x-4">
           <button
-            onClick={() => setUserType("clients")}
+            onClick={() => setUserType("client")}
             className={`px-4 py-2 rounded-md ${
-              userType === "clients"
+              userType === "client"
                 ? "bg-green-600 text-white"
                 : "bg-gray-200 text-gray-700"
             }`}
@@ -59,9 +84,9 @@ const Users = () => {
             Clients
           </button>
           <button
-            onClick={() => setUserType("experts")}
+            onClick={() => setUserType("expert")}
             className={`px-4 py-2 rounded-md ${
-              userType === "experts"
+              userType === "expert"
                 ? "bg-green-600 text-white"
                 : "bg-gray-200 text-gray-700"
             }`}
@@ -96,7 +121,7 @@ const Users = () => {
                   Email
                 </th>
                 <th className="text-left p-4 font-semibold text-gray-700">
-                  Role
+                  Status
                 </th>
                 <th className="text-left p-4 font-semibold text-gray-700">
                   Actions
@@ -106,16 +131,30 @@ const Users = () => {
             <tbody>
               {users.length > 0 ? (
                 users.map((user) => (
-                  <tr key={user.id} className="border-t">
-                    <td className="p-4">{user.name}</td>
+                  <tr key={user._id} className="border-t">
+                    <td className="p-4">
+                      {user.firstName} {user.lastName}
+                    </td>
                     <td className="p-4">{user.email}</td>
-                    <td className="p-4 capitalize">{user.role}</td>
+                    <td className="p-4 capitalize">{user.status || "N/A"}</td>
                     <td className="p-4 space-x-2">
-                      <button className="text-blue-600 hover:underline">
+                      <button
+                        onClick={() => handleView(user)}
+                        className="text-blue-600 hover:underline"
+                      >
                         View
                       </button>
-                      <button className="text-red-600 hover:underline">
-                        Block
+                      <button
+                        onClick={() => handleBan(user._id)}
+                        className="text-yellow-600 hover:underline"
+                      >
+                        {user.status === "Banned" ? "Unban" : "Ban"}
+                      </button>
+                      <button
+                        onClick={() => handleDelete(user._id)}
+                        className="text-red-600 hover:underline"
+                      >
+                        Delete
                       </button>
                     </td>
                   </tr>
@@ -123,7 +162,7 @@ const Users = () => {
               ) : (
                 <tr>
                   <td colSpan="4" className="text-center p-4 text-gray-500">
-                    No {userType} found.
+                    No {userType}s found.
                   </td>
                 </tr>
               )}
