@@ -3,9 +3,17 @@ import axios from "axios";
 import { Card, CardContent } from "../components/ui/card";
 import { MessageSquare, AlertTriangle, CreditCard } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
   const { isSignedIn } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isSignedIn) {
+      navigate("/signin");
+    }
+  }, [isSignedIn, navigate]);
 
   const [dashboardData, setDashboardData] = useState({
     consultations: null,
@@ -17,7 +25,9 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const res = await axios.get("/api/admin/dashboard");
+        const res = await axios.get(
+          "https://expertly-zxb1.onrender.com/api/v1/api/admin/dashboard"
+        );
         setDashboardData(res.data);
       } catch (err) {
         console.error("Failed to fetch dashboard data", err);

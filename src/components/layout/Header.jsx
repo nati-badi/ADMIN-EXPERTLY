@@ -3,7 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export default function Header() {
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, admin } = useAuth();
   const navigate = useNavigate();
 
   return (
@@ -12,9 +12,12 @@ export default function Header() {
         <h2 className="text-3xl font-bold">
           Hi,{" "}
           <span className="text-green-600">
-            {isSignedIn ? "Mr. Admin" : "Guest"}
+            {isSignedIn && admin?.firstName
+              ? `Mr. ${admin.firstName}`
+              : "Guest"}
           </span>
         </h2>
+
         <p className="text-sm text-gray-500">Good Evening</p>
       </div>
       <div className="flex items-center space-x-4">
@@ -25,7 +28,9 @@ export default function Header() {
               alt="Profile"
               className="w-10 h-10 rounded-full object-cover"
             />
-            <span className="text-gray-400 font-bold">Mr. Admin</span>
+            <span className="text-gray-400 font-bold">
+              {admin?.firstName ? `${admin.firstName}` : ""}
+            </span>
           </>
         ) : (
           <div className="space-x-4">

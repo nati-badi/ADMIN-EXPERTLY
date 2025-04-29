@@ -1,17 +1,17 @@
-// App.jsx
-import { useState } from "react";
 import { useRoutes } from "react-router-dom";
 import routes from "./routes";
-import { AuthContext } from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
-  const [isSignedIn, setIsSignedIn] = useState(true);
-  const routeElements = useRoutes(routes(isSignedIn));
+  const routeElements = useRoutes(routes());
 
   return (
-    <AuthContext.Provider value={{ isSignedIn, setIsSignedIn }}>
+    <AuthProvider>
       {routeElements}
-    </AuthContext.Provider>
+      <ToastContainer position="top-right" autoClose={3000} />
+    </AuthProvider>
   );
 }
 

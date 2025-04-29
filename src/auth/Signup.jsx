@@ -1,21 +1,25 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { toast } from "react-toastify";
+import axios from "axios";
+import * as z from "zod";
+import { AuthContext } from "../context/AuthContext";
 
-// Zod schema
+// ✅ Admin Signup Schema based on your documentation
 const signupSchema = z.object({
-  firstName: z.string().min(2, "Too short"),
-  lastName: z.string().min(2, "Too short"),
+  firstName: z.string().min(2, "First name is too short"),
+  lastName: z.string().min(2, "Last name is too short"),
   email: z.string().email("Invalid email"),
-  phoneNumber: z.string().min(10, "Too short"),
+  phoneNumber: z.string().min(10, "Invalid phone number"),
   password: z.string().min(6, "Minimum 6 characters"),
-  profilePicture: z.any().optional(), // File input
+  profilePicture: z.any().optional(),
 });
 
 export default function Signup() {
   const navigate = useNavigate();
+  const { setIsSignedIn, setAdmin } = useContext(AuthContext);
 
   const {
     register,
@@ -27,18 +31,31 @@ export default function Signup() {
   });
 
   const onSubmit = async (data) => {
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      if (value) formData.append(key, value);
-    });
-
     try {
-      await axios.post("/api/auth/signup", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      navigate("/profileClient");
+      const res = await axios.post(
+        "https://expertly-zxb1.onrender.com/api/v1/admin",
+        {
+          ...data,
+          role: "Admin",
+          status: "Active",
+        }
+      );
+
+      const { token, admin } = res.data.data;
+
+      // Save to localStorage
+      localStorage.setItem("token", token);
+      localStorage.setItem("admin", JSON.stringify(admin));
+
+      // Update auth state
+      setIsSignedIn(true);
+      setAdmin(admin);
+
+      toast.success("Signup successful!");
+      navigate("/dashboard");
     } catch (err) {
       console.error("Signup failed:", err);
+      toast.error("Signup failed!");
     }
   };
 
@@ -46,7 +63,7 @@ export default function Signup() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-lg bg-white p-10 rounded-2xl shadow-lg">
         <h2 className="text-3xl font-bold text-green-600 text-center mb-8">
-          Sign up
+          Admin Sign Up
         </h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           {/* First & Last Name */}
@@ -110,7 +127,7 @@ export default function Signup() {
   );
 }
 
-// 🔁 Reusable Field Component
+// ✅ Reusable input field component
 function Field({ label, name, type = "text", register, error }) {
   return (
     <div>
@@ -120,7 +137,7 @@ function Field({ label, name, type = "text", register, error }) {
       <input
         type={type}
         {...register(name)}
-        className={`input-style border-gray-300 focus:border-green-500 focus:ring-green-500 rounded-sm shadow-sm focus:outline-none p-1 pl-2 w-full ${
+        className={`input-style border-gray-300 focus:border-green-500 focus:ring-green-500 rounded-md p-2 w-full ${
           error ? "border-red-500" : ""
         }`}
       />

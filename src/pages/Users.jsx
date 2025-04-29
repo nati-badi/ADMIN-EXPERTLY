@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-// import axios from "../api/axios"; // your axios instance
-import axios from "axios"; // for testing purposes, use the default axios instance
+import axios from "axios";
 
 const Users = () => {
   // State variables
@@ -9,8 +8,7 @@ const Users = () => {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Base URL for API requests
-  // const baseUrl = import.meta.env.VITE_BASE_URL; // e.g., https://expertly-zxb1.onrender.com/api/v1
+  // const baseUrl = import.meta.env.BaseUrl;
 
   // console.log(baseUrl);
 
@@ -21,7 +19,7 @@ const Users = () => {
         `https://expertly-zxb1.onrender.com/api/v1/${userType}`
       );
 
-      console.log("Response:", response.data); // this time you will see JSON, not HTML!
+      console.log("Response:", response.data); // this time you will see JSON.
 
       const data = response.data;
 
@@ -41,22 +39,11 @@ const Users = () => {
     fetchUsers();
   }, [userType]);
 
-  const handleView = (user) => {
-    console.log("Viewing user:", user);
-  };
-
-  const handleBan = async (id) => {
-    try {
-      await axios.patch(`/${userType}/${id}/ban`);
-      fetchUsers(); // refresh list
-    } catch (error) {
-      console.error("Failed to ban user:", error);
-    }
-  };
-
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/${userType}/${id}`);
+      await axios.delete(
+        `https://expertly-zxb1.onrender.com/api/v1/${userType}/${id}`
+      );
       fetchUsers(); // refresh list
     } catch (error) {
       console.error("Failed to delete user:", error);
@@ -138,18 +125,6 @@ const Users = () => {
                     <td className="p-4">{user.email}</td>
                     <td className="p-4 capitalize">{user.status || "N/A"}</td>
                     <td className="p-4 space-x-2">
-                      <button
-                        onClick={() => handleView(user)}
-                        className="text-blue-600 hover:underline"
-                      >
-                        View
-                      </button>
-                      <button
-                        onClick={() => handleBan(user._id)}
-                        className="text-yellow-600 hover:underline"
-                      >
-                        {user.status === "Banned" ? "Unban" : "Ban"}
-                      </button>
                       <button
                         onClick={() => handleDelete(user._id)}
                         className="text-red-600 hover:underline"
