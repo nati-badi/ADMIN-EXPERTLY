@@ -3,6 +3,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import * as z from "zod";
+import axios from "axios";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext"; // Make sure this path is correct
+import { toast } from "react-toastify";
 
 // Schema
 const signinSchema = z.object({
@@ -12,6 +16,7 @@ const signinSchema = z.object({
 });
 
 const Signin = () => {
+  const { setIsSignedIn, setAdmin } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const {
@@ -29,10 +34,29 @@ const Signin = () => {
 
   const onSubmit = async (data) => {
     try {
-      // Simulated login
+      const res = await axios.post(
+        "https://expertly-zxb1.onrender.com/api/v1/login/Admin",
+        {
+          email: data.email,
+          password: data.password,
+        }
+      );
+
+      const { token, admin } = res.data; // not res.data.data
+
+      // Save to localStorage
+      localStorage.setItem("token", token);
+      localStorage.setItem("admin", JSON.stringify(admin));
+
+      // Update context
+      setIsSignedIn(true);
+      setAdmin(admin);
+
+      toast.success("Signin successful!");
       navigate("/dashboard");
     } catch (error) {
       console.error("Signin failed:", error);
+      toast.error("Signin failed. Please check your credentials.");
     }
   };
 
@@ -107,6 +131,18 @@ const Signin = () => {
           >
             Sign In
           </button>
+
+          {/* Don't have an account? */}
+          <div className="text-center mt-4 text-sm text-gray-600">
+            Don't have an account?{" "}
+            <button
+              type="button"
+              onClick={() => navigate("/signup")}
+              className="text-green-600 hover:underline"
+            >
+              Sign up
+            </button>
+          </div>
         </form>
       </div>
     </div>

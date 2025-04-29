@@ -5,7 +5,6 @@ import {
   Users,
   DollarSign,
   ShieldAlert,
-  BarChart2,
   Settings,
   LogOut,
 } from "lucide-react";
@@ -96,19 +95,7 @@ export default function Sidebar() {
         </NavLink>
 
         <NavLink
-          to="/analytics"
-          className={({ isActive }) =>
-            `flex items-center space-x-3 cursor-pointer ${
-              isActive ? "text-green-600" : "hover:text-green-600"
-            }`
-          }
-        >
-          <BarChart2 className="w-5 h-5" />
-          <span>Analytics</span>
-        </NavLink>
-
-        <NavLink
-          to="/settings"
+          to="/profile"
           className={({ isActive }) =>
             `flex items-center space-x-3 cursor-pointer ${
               isActive ? "text-green-600" : "hover:text-green-600"

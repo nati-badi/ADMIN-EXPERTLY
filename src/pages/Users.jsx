@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Spinner from "../components/ui/Spinner";
 
 const Users = () => {
   // State variables
@@ -96,53 +97,59 @@ const Users = () => {
       {/* Table */}
       <div className="overflow-x-auto bg-white rounded-md shadow-md">
         {loading ? (
-          <div className="p-6 text-center text-gray-500">Loading users...</div>
+          <div className="flex justify-center p-6">
+            <Spinner />
+          </div>
         ) : (
-          <table className="w-full table-auto">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="text-left p-4 font-semibold text-gray-700">
-                  Name
-                </th>
-                <th className="text-left p-4 font-semibold text-gray-700">
-                  Email
-                </th>
-                <th className="text-left p-4 font-semibold text-gray-700">
-                  Status
-                </th>
-                <th className="text-left p-4 font-semibold text-gray-700">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.length > 0 ? (
-                users.map((user) => (
-                  <tr key={user._id} className="border-t">
-                    <td className="p-4">
-                      {user.firstName} {user.lastName}
-                    </td>
-                    <td className="p-4">{user.email}</td>
-                    <td className="p-4 capitalize">{user.status || "N/A"}</td>
-                    <td className="p-4 space-x-2">
-                      <button
-                        onClick={() => handleDelete(user._id)}
-                        className="text-red-600 hover:underline"
-                      >
-                        Delete
-                      </button>
+          <div
+            className={users.length > 7 ? "h-[60vh] overflow-y-auto pr-2" : ""}
+          >
+            <table className="w-full table-auto">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="text-left p-4 font-semibold text-gray-700">
+                    Name
+                  </th>
+                  <th className="text-left p-4 font-semibold text-gray-700">
+                    Email
+                  </th>
+                  <th className="text-left p-4 font-semibold text-gray-700">
+                    Status
+                  </th>
+                  <th className="text-left p-4 font-semibold text-gray-700">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.length > 0 ? (
+                  users.map((user) => (
+                    <tr key={user._id} className="border-t">
+                      <td className="p-4">
+                        {user.firstName} {user.lastName}
+                      </td>
+                      <td className="p-4">{user.email}</td>
+                      <td className="p-4 capitalize">{user.status || "N/A"}</td>
+                      <td className="p-4 space-x-2">
+                        <button
+                          onClick={() => handleDelete(user._id)}
+                          className="text-red-600 hover:underline"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="4" className="text-center p-4 text-gray-500">
+                      No {userType}s found.
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="4" className="text-center p-4 text-gray-500">
-                    No {userType}s found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                )}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

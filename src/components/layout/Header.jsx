@@ -1,6 +1,7 @@
 import React from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import GreetingWithTime from "../ui/GreatingWithTime";
 
 export default function Header() {
   const { isSignedIn, admin } = useAuth();
@@ -12,17 +13,18 @@ export default function Header() {
         <h2 className="text-3xl font-bold">
           Hi,{" "}
           <span className="text-green-600">
-            {isSignedIn && admin?.firstName
-              ? `Mr. ${admin.firstName}`
-              : "Guest"}
+            {isSignedIn && admin?.firstName ? admin.firstName : "Guest"}
           </span>
         </h2>
 
-        <p className="text-sm text-gray-500">Good Evening</p>
+        <GreetingWithTime />
       </div>
       <div className="flex items-center space-x-4">
         {isSignedIn ? (
-          <>
+          <div
+            className="flex items-center space-x-2 cursor-pointer"
+            onClick={() => navigate("/profile")}
+          >
             <img
               src="/perfect.png"
               alt="Profile"
@@ -31,7 +33,7 @@ export default function Header() {
             <span className="text-gray-400 font-bold">
               {admin?.firstName ? `${admin.firstName}` : ""}
             </span>
-          </>
+          </div>
         ) : (
           <div className="space-x-4">
             <button

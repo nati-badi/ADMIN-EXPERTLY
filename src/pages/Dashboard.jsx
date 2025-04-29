@@ -4,6 +4,7 @@ import { Card, CardContent } from "../components/ui/card";
 import { MessageSquare, AlertTriangle, CreditCard } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import Spinner from "../components/ui/Spinner";
 
 export default function Dashboard() {
   const { isSignedIn } = useAuth();

@@ -13,6 +13,8 @@ import Analytics from "./pages/Analytics";
 import Signup from "./auth/Signup";
 import Signin from "./auth/Signin";
 
+import AdminProfile from "./pages/AdminProfile";
+
 const routes = () => [
   {
     path: "/",
@@ -30,11 +32,9 @@ const routes = () => [
       { path: "payments", element: <Payments /> },
       { path: "conflicts", element: <Conflicts /> },
       { path: "analytics", element: <Analytics /> },
+      { path: "profile", element: <AdminProfile /> },
+      // { path: "settings", element: <Settings /> },
     ],
-  },
-  {
-    path: "*",
-    element: <NotFound />,
   },
   {
     path: "/signup",
@@ -43,6 +43,10 @@ const routes = () => [
   {
     path: "/signin",
     element: <Signin />,
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ];
 
