@@ -26,7 +26,7 @@ export default function Header() {
             onClick={() => navigate("/profile")}
           >
             <img
-              src="/perfect.png"
+              src="/user.png"
               alt="Profile"
               className="w-10 h-10 rounded-full object-cover"
             />

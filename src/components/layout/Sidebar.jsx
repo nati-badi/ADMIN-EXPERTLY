@@ -95,7 +95,7 @@ export default function Sidebar() {
         </NavLink>
 
         <NavLink
-          to="/profile"
+          to="/settings"
           className={({ isActive }) =>
             `flex items-center space-x-3 cursor-pointer ${
               isActive ? "text-green-600" : "hover:text-green-600"

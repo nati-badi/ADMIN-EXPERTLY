@@ -1,22 +1,35 @@
 import React, { useState } from "react";
 import { Eye } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
 
 const ExpertApprovalCard = ({ expert, onApprove, onReject }) => {
-  const documents = expert.cv ? [{ name: "CV", url: expert.cv }] : [];
-  const [loadingAction, setLoadingAction] = useState(null); // "approve" | "decline"
+  const [loadingAction, setLoadingAction] = useState(null);
+  const { setAdmin } = useAuth();
 
-  const handleClick = async (action) => {
+  const handleAction = async (action) => {
     setLoadingAction(action);
-    await (action === "approve" ? onApprove(expert._id) : onReject(expert._id));
+
+    const updatedAdmin =
+      action === "approve"
+        ? await onApprove(expert._id)
+        : await onReject(expert._id);
+
+    if (updatedAdmin) {
+      setAdmin(updatedAdmin);
+      localStorage.setItem("admin", JSON.stringify(updatedAdmin));
+    }
+
     setLoadingAction(null);
   };
+
+  const documents = expert.cv ? [{ name: "CV", url: expert.cv }] : [];
 
   return (
     <div className="p-6 bg-white border border-gray-200 rounded-2xl shadow-md flex flex-col gap-4 hover:shadow-lg transition-shadow">
       {/* Header */}
       <div className="flex items-center gap-4">
         <img
-          src={expert.profilePicture || "/default-profile.png"}
+          src={expert.profilePicture || "/user.png"}
           alt="Profile"
           className="w-16 h-16 rounded-full object-cover border"
         />
@@ -48,7 +61,7 @@ const ExpertApprovalCard = ({ expert, onApprove, onReject }) => {
                   href={doc.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-green-600 hover:text-green-800 flex items-center gap-1 text-sm"
+                  className="text-green-600 hover:text-green-800 flex items-center gap-1"
                 >
                   <Eye className="w-4 h-4" />
                   View
@@ -64,14 +77,14 @@ const ExpertApprovalCard = ({ expert, onApprove, onReject }) => {
       {/* Actions */}
       <div className="flex justify-end gap-4 mt-4">
         <button
-          onClick={() => handleClick("decline")}
+          onClick={() => handleAction("decline")}
           disabled={loadingAction !== null}
           className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded hover:bg-red-600 disabled:opacity-50"
         >
           {loadingAction === "decline" ? "Declining..." : "Decline"}
         </button>
         <button
-          onClick={() => handleClick("approve")}
+          onClick={() => handleAction("approve")}
           disabled={loadingAction !== null}
           className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded hover:bg-green-700 disabled:opacity-50"
         >

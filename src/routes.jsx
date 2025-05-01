@@ -8,12 +8,12 @@ import Consultations from "./pages/Consultations";
 import Professionals from "./pages/Professionals";
 import Payments from "./pages/Payments";
 import Conflicts from "./pages/Conflicts";
-import Analytics from "./pages/Analytics";
 
 import Signup from "./auth/Signup";
 import Signin from "./auth/Signin";
 
 import AdminProfile from "./pages/AdminProfile";
+import EditProfile from "./pages/Editprofile";
 
 const routes = () => [
   {
@@ -31,9 +31,9 @@ const routes = () => [
       { path: "professionals", element: <Professionals /> },
       { path: "payments", element: <Payments /> },
       { path: "conflicts", element: <Conflicts /> },
-      { path: "analytics", element: <Analytics /> },
       { path: "profile", element: <AdminProfile /> },
-      // { path: "settings", element: <Settings /> },
+      { path: "settings", element: <Settings /> },
+      { path: "edit-profile", element: <EditProfile /> },
     ],
   },
   {
