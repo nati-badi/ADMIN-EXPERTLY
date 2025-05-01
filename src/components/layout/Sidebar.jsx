@@ -12,7 +12,7 @@ import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 export default function Sidebar() {
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, logout } = useAuth();
 
   return (
     <aside className="w-64 bg-white shadow-md p-4">
@@ -109,7 +109,10 @@ export default function Sidebar() {
         <hr className="border-t border-gray-300 my-4" />
 
         {isSignedIn ? (
-          <button className="flex items-center space-x-3 text-red-500 hover:text-red-700 cursor-pointer">
+          <button
+            onClick={logout}
+            className="flex items-center space-x-3 text-red-500 hover:text-red-700 cursor-pointer"
+          >
             <LogOut className="w-5 h-5" />
             <span>Logout</span>
           </button>

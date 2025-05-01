@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +7,7 @@ import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext"; // Make sure this path is correct
 import { toast } from "react-toastify";
+import Spinner from "../components/ui/Spinner";
 
 // Schema
 const signinSchema = z.object({
@@ -16,6 +17,7 @@ const signinSchema = z.object({
 });
 
 const Signin = () => {
+  const [loading, setLoading] = useState(false);
   const { setIsSignedIn, setAdmin } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -33,6 +35,7 @@ const Signin = () => {
   });
 
   const onSubmit = async (data) => {
+    setLoading(true);
     try {
       const res = await axios.post(
         "https://expertly-zxb1.onrender.com/api/v1/login/Admin",
@@ -58,7 +61,26 @@ const Signin = () => {
       console.error("Signin failed:", error);
       toast.error("Signin failed. Please check your credentials.");
     }
+    setLoading(false);
   };
+
+  function Field({ label, name, type = "text", register, error }) {
+    return (
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          {label}
+        </label>
+        <input
+          type={type}
+          {...register(name)}
+          className={`appearance-none block w-full px-4 py-2 border text-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition ${
+            error ? "border-red-500" : "border-gray-300"
+          }`}
+        />
+        {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
@@ -68,7 +90,13 @@ const Signin = () => {
         </h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Email */}
-          <div>
+          <Field
+            label="Email Address"
+            name="email"
+            type="email"
+            register={register}
+            error={errors.email?.message}
+          >
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Email Address
             </label>
@@ -84,10 +112,16 @@ const Signin = () => {
                 {errors.email.message}
               </p>
             )}
-          </div>
+          </Field>
 
           {/* Password */}
-          <div>
+          <Field
+            label="Password"
+            name="password"
+            type="password"
+            register={register}
+            error={errors.password?.message}
+          >
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Password
             </label>
@@ -103,7 +137,7 @@ const Signin = () => {
                 {errors.password.message}
               </p>
             )}
-          </div>
+          </Field>
 
           {/* Remember me + Forgot password */}
           <div className="flex items-center justify-between">
@@ -127,9 +161,10 @@ const Signin = () => {
           {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded-md transition-all"
+            disabled={loading}
+            className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded-md transition-all flex justify-center items-center"
           >
-            Sign In
+            {loading ? <Spinner size={5} color="white" /> : "Sign In"}
           </button>
 
           {/* Don't have an account? */}
@@ -138,7 +173,7 @@ const Signin = () => {
             <button
               type="button"
               onClick={() => navigate("/signup")}
-              className="text-green-600 hover:underline"
+              className="text-green-600 hover:underline font-medium cursor-pointer"
             >
               Sign up
             </button>
