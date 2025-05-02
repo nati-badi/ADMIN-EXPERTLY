@@ -36,7 +36,7 @@ const Field = ({
   </div>
 );
 
-const EditProfilePage = () => {
+const EditProfile = () => {
   const [form, setForm] = useState({ firstName: "", email: "" });
   const [loading, setLoading] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -177,4 +177,4 @@ const EditProfilePage = () => {
   );
 };
 
-export default EditProfilePage;
+export default EditProfile;
