@@ -8,12 +8,11 @@ import Consultations from "./pages/Consultations";
 import Professionals from "./pages/Professionals";
 import Payments from "./pages/Payments";
 import Conflicts from "./pages/Conflicts";
-
 import Signup from "./auth/Signup";
 import Signin from "./auth/Signin";
-
 import AdminProfile from "./pages/AdminProfile";
 import EditProfile from "./pages/Editprofile";
+import ProtectedRoute from "./components/ProtectedRoute"; // ✅ Import it
 
 const routes = () => [
   {
@@ -22,7 +21,11 @@ const routes = () => [
   },
   {
     path: "/",
-    element: <AdminLayout />,
+    element: (
+      <ProtectedRoute>
+        <AdminLayout />
+      </ProtectedRoute>
+    ),
     children: [
       { path: "dashboard", element: <Dashboard /> },
       { path: "users", element: <Users /> },
@@ -32,7 +35,6 @@ const routes = () => [
       { path: "payments", element: <Payments /> },
       { path: "conflicts", element: <Conflicts /> },
       { path: "profile", element: <AdminProfile /> },
-      { path: "settings", element: <Settings /> },
       { path: "edit-profile", element: <EditProfile /> },
     ],
   },

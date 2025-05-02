@@ -1,17 +1,13 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
-// Create the context
 export const AuthContext = createContext();
 
-// Export a custom hook to use the context
 export const useAuth = () => useContext(AuthContext);
 
-// AuthProvider component
 export function AuthProvider({ children }) {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [admin, setAdmin] = useState(null);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true); //
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -21,19 +17,13 @@ export function AuthProvider({ children }) {
       setIsSignedIn(true);
       setAdmin(JSON.parse(adminData));
     }
-  }, []);
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("admin");
-    setIsSignedIn(false);
-    setAdmin(null);
-    navigate("/signin");
-  };
+    setLoading(false);
+  }, []);
 
   return (
     <AuthContext.Provider
-      value={{ isSignedIn, setIsSignedIn, admin, setAdmin, logout }}
+      value={{ isSignedIn, setIsSignedIn, admin, setAdmin, loading }}
     >
       {children}
     </AuthContext.Provider>

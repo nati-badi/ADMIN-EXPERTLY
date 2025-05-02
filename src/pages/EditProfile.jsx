@@ -37,7 +37,7 @@ const Field = ({
 );
 
 const EditProfilePage = () => {
-  const [form, setForm] = useState({ name: "", email: "" });
+  const [form, setForm] = useState({ firstName: "", email: "" });
   const [loading, setLoading] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -59,7 +59,7 @@ const EditProfilePage = () => {
         const updatedAdmin = res.data.data.admin;
 
         setForm({
-          name: updatedAdmin.firstName || "",
+          firstName: updatedAdmin.firstName || "",
           email: updatedAdmin.email || "",
         });
 
@@ -80,15 +80,13 @@ const EditProfilePage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitted(true);
-    if (!form.name.trim()) return;
+    if (!form.firstName.trim()) return;
 
     setLoading(true);
     try {
       const res = await axios.patch(
         `https://expertly-zxb1.onrender.com/api/v1/admin/${adminId}`,
-        {
-          name: form.name,
-        }
+        { firstName: form.firstName }
       );
 
       const updatedAdmin = res.data.data.admin;
@@ -140,11 +138,11 @@ const EditProfilePage = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <Field
             label="Name"
-            name="name"
-            value={form.name}
+            name="firstName"
+            value={form.firstName}
             onChange={handleChange}
           />
-          {submitted && !form.name.trim() && (
+          {submitted && !form.firstName.trim() && (
             <p className="text-red-500 text-sm mt-1">Name is required.</p>
           )}
 

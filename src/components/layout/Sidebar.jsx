@@ -10,9 +10,41 @@ import {
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import Spinner from "../ui/Spinner";
 
 export default function Sidebar() {
-  const { isSignedIn, logout } = useAuth();
+  const { isSignedIn, setAdmin } = useAuth();
+  const navigate = useNavigate();
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    try {
+      const admin = JSON.parse(localStorage.getItem("admin"));
+      const token = admin?.token;
+
+      await axios.post(
+        "https://expertly-zxb1.onrender.com/api/v1/logout",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      localStorage.clear();
+      setAdmin(null);
+      navigate("/signin");
+    } catch (err) {
+      console.error("Logout failed:", err);
+    } finally {
+      setLoggingOut(false);
+    }
+  };
 
   return (
     <aside className="w-64 bg-white shadow-md p-4">
@@ -110,11 +142,20 @@ export default function Sidebar() {
 
         {isSignedIn ? (
           <button
-            onClick={logout}
-            className="flex items-center space-x-3 text-red-500 hover:text-red-700 cursor-pointer"
+            onClick={handleLogout}
+            disabled={loggingOut}
+            className={`flex items-center space-x-2 cursor-pointer transition ${
+              loggingOut ? "text-gray-400" : "text-red-500 hover:text-red-700"
+            }`}
           >
             <LogOut className="w-5 h-5" />
-            <span>Logout</span>
+            {loggingOut ? (
+              <>
+                <Spinner size={5} className="w-4 h-4 animate-spin" />
+              </>
+            ) : (
+              <span>Logout</span>
+            )}
           </button>
         ) : null}
       </nav>
