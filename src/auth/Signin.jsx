@@ -91,14 +91,14 @@ const Signin = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Email */}
           <Field
-            label="Email Address"
+            label="Email Address /  Phone Number"
             name="email"
             type="email"
             register={register}
             error={errors.email?.message}
           >
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email Address
+              Email Address / Phone Number
             </label>
             <input
               type="email"
