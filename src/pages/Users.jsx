@@ -133,7 +133,7 @@ const Users = () => {
                       <td className="p-4 space-x-2">
                         <button
                           onClick={() => handleDelete(user._id)}
-                          className="text-red-600 hover:underline"
+                          className="flex items-center gap-1 px-3 py-2 bg-red-100 text-red-700 rounded hover:bg-red-200 text-sm disabled:opacity-50"
                         >
                           Delete
                         </button>
