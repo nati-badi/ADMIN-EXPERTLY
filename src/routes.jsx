@@ -12,7 +12,8 @@ import Signup from "./auth/Signup";
 import Signin from "./auth/Signin";
 import AdminProfile from "./pages/AdminProfile";
 import EditProfile from "./pages/EditProfile";
-import ProtectedRoute from "./components/ProtectedRoute"; // ✅ Import it
+import ProtectedRoute from "./components/ProtectedRoute";
+import Preferences from "./pages/Preferences";
 
 const routes = () => [
   {
@@ -36,6 +37,7 @@ const routes = () => [
       { path: "conflicts", element: <Conflicts /> },
       { path: "profile", element: <AdminProfile /> },
       { path: "edit-profile", element: <EditProfile /> },
+      { path: "preferences", element: <Preferences /> },
     ],
   },
   {

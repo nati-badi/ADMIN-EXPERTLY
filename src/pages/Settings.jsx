@@ -37,7 +37,10 @@ const Settings = () => {
           <p className="text-sm text-gray-600">
             Toggle dark mode, language, or notification preferences.
           </p>
-          <button className="mt-3 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 cursor-pointer">
+          <button
+            onClick={() => navigate("/preferences")}
+            className="mt-3 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 cursor-pointer"
+          >
             Adjust Preferences
           </button>
         </Card>
