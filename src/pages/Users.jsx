@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import Spinner from "../components/ui/Spinner";
+import { useNavigate } from "react-router-dom";
 
 const Users = () => {
-  // State variables
-  const [userType, setUserType] = useState("client"); // singular
+  const [userType, setUserType] = useState("client");
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // const baseUrl = import.meta.env.BaseUrl;
-
-  // console.log(baseUrl);
+  const navigate = useNavigate();
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -19,16 +17,12 @@ const Users = () => {
       const response = await axios.get(
         `https://expertly-zxb1.onrender.com/api/v1/${userType}`
       );
-
-      console.log("Response:", response.data); // this time you will see JSON.
-
       const data = response.data;
-
-      if (userType === "client") {
-        setUsers(data.data.clients || []);
-      } else if (userType === "expert") {
-        setUsers(data.data.experts || []);
-      }
+      setUsers(
+        userType === "client"
+          ? data.data.clients || []
+          : data.data.experts || []
+      );
     } catch (error) {
       console.error("Failed to fetch users:", error);
     } finally {
@@ -45,11 +39,22 @@ const Users = () => {
       await axios.delete(
         `https://expertly-zxb1.onrender.com/api/v1/${userType}/${id}`
       );
-      fetchUsers(); // refresh list
+      fetchUsers();
     } catch (error) {
       console.error("Failed to delete user:", error);
     }
   };
+
+  // 🔍 Client-side search filtering
+  const filteredUsers = useMemo(() => {
+    const lower = search.toLowerCase();
+    return users.filter(
+      (user) =>
+        user.firstName?.toLowerCase().includes(lower) ||
+        user.lastName?.toLowerCase().includes(lower) ||
+        user.email?.toLowerCase().includes(lower)
+    );
+  }, [search, users]);
 
   return (
     <div className="p-6">
@@ -102,7 +107,9 @@ const Users = () => {
           </div>
         ) : (
           <div
-            className={users.length > 7 ? "h-[60vh] overflow-y-auto pr-2" : ""}
+            className={
+              filteredUsers.length > 7 ? "h-[60vh] overflow-y-auto pr-2" : ""
+            }
           >
             <table className="w-full table-auto">
               <thead className="bg-gray-100">
@@ -122,9 +129,15 @@ const Users = () => {
                 </tr>
               </thead>
               <tbody>
-                {users.length > 0 ? (
-                  users.map((user) => (
-                    <tr key={user._id} className="border-t">
+                {filteredUsers.length > 0 ? (
+                  filteredUsers.map((user) => (
+                    <tr
+                      key={user._id}
+                      className="border-b hover:bg-green-50 transition-all group cursor-pointer"
+                      onClick={() =>
+                        navigate(`/user-detail/${userType}/${user._id}`)
+                      }
+                    >
                       <td className="p-4">
                         {user.firstName} {user.lastName}
                       </td>
@@ -133,7 +146,7 @@ const Users = () => {
                       <td className="p-4 space-x-2">
                         <button
                           onClick={() => handleDelete(user._id)}
-                          className="flex items-center gap-1 px-3 py-2 bg-red-100 text-red-700 rounded hover:bg-red-200 text-sm disabled:opacity-50"
+                          className="hidden group-hover:inline-flex items-center gap-1 px-3 py-2 bg-red-100 text-red-700 rounded hover:bg-red-200 text-sm transition"
                         >
                           Delete
                         </button>

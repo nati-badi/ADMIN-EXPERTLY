@@ -67,18 +67,6 @@ export default function Sidebar() {
         </NavLink>
 
         <NavLink
-          to="/consultations"
-          className={({ isActive }) =>
-            `flex items-center space-x-3 cursor-pointer ${
-              isActive ? "text-green-600" : "hover:text-green-600"
-            }`
-          }
-        >
-          <MessageCircle className="w-5 h-5" />
-          <span>Consultations</span>
-        </NavLink>
-
-        <NavLink
           to="/professionals"
           className={({ isActive }) =>
             `flex items-center space-x-3 cursor-pointer ${
@@ -115,7 +103,7 @@ export default function Sidebar() {
         </NavLink>
 
         <NavLink
-          to="/conflicts"
+          to="/notifications"
           className={({ isActive }) =>
             `flex items-center space-x-3 cursor-pointer ${
               isActive ? "text-green-600" : "hover:text-green-600"
@@ -123,7 +111,7 @@ export default function Sidebar() {
           }
         >
           <ShieldAlert className="w-5 h-5" />
-          <span>Conflicts</span>
+          <span>Notifications</span>
         </NavLink>
 
         <NavLink

@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { FiBell } from "react-icons/fi";
 import GreetingWithTime from "../ui/GreatingWithTime";
 
 export default function Header() {
   const { isSignedIn, admin } = useAuth();
   const navigate = useNavigate();
+
+  // Assume this state would be fetched or managed via context/API
+  const [hasNewNotification, setHasNewNotification] = useState(true);
 
   return (
     <header className="flex justify-between items-center mx-8 mt-3">
@@ -16,10 +20,24 @@ export default function Header() {
             {isSignedIn && admin?.firstName ? admin.firstName : "Guest"}
           </span>
         </h2>
-
         <GreetingWithTime />
       </div>
+
       <div className="flex items-center space-x-4">
+        {/* Notification Bell */}
+        {isSignedIn && (
+          <div
+            className="relative cursor-pointer"
+            onClick={() => navigate("/notifications")}
+          >
+            <FiBell className="text-2xl text-gray-600 hover:text-green-600 transition" />
+            {hasNewNotification && (
+              <span className="absolute top-0 right-0 block h-2 w-2 rounded-full ring-2 ring-white bg-red-500"></span>
+            )}
+          </div>
+        )}
+
+        {/* Profile Section */}
         {isSignedIn ? (
           <div
             className="flex items-center space-x-2 cursor-pointer"

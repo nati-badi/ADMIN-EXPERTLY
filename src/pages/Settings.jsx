@@ -44,6 +44,19 @@ const Settings = () => {
             Adjust Preferences
           </button>
         </Card>
+
+        <Card>
+          <h3 className="text-lg font-semibold mb-2">Notifications</h3>
+          <p className="text-sm text-gray-600">
+            View and manage your notifications.
+          </p>
+          <button
+            onClick={() => navigate("/notifications")}
+            className="mt-3 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 cursor-pointer"
+          >
+            Notifications
+          </button>
+        </Card>
       </div>
     </div>
   );

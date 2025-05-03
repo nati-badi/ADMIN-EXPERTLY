@@ -4,16 +4,16 @@ import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import Users from "./pages/Users";
 import Settings from "./pages/Settings";
-import Consultations from "./pages/Consultations";
+import Notifications from "./pages/Notifications";
 import Professionals from "./pages/Professionals";
 import Payments from "./pages/Payments";
-import Conflicts from "./pages/Conflicts";
 import Signup from "./auth/Signup";
 import Signin from "./auth/Signin";
 import AdminProfile from "./pages/AdminProfile";
 import EditProfile from "./pages/EditProfile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Preferences from "./pages/Preferences";
+import UserDetail from "./pages/UserDetail";
 
 const routes = () => [
   {
@@ -31,13 +31,13 @@ const routes = () => [
       { path: "dashboard", element: <Dashboard /> },
       { path: "users", element: <Users /> },
       { path: "settings", element: <Settings /> },
-      { path: "consultations", element: <Consultations /> },
       { path: "professionals", element: <Professionals /> },
       { path: "payments", element: <Payments /> },
-      { path: "conflicts", element: <Conflicts /> },
       { path: "profile", element: <AdminProfile /> },
       { path: "edit-profile", element: <EditProfile /> },
       { path: "preferences", element: <Preferences /> },
+      { path: "notifications", element: <Notifications /> },
+      { path: "user-detail/:userType/:id", element: <UserDetail /> },
     ],
   },
   {

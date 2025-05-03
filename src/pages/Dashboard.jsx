@@ -46,7 +46,7 @@ export default function Dashboard() {
         <CardContent className="flex items-center space-x-4 p-4">
           <MessageSquare className="text-green-600" />
           <div>
-            <p className="font-semibold">Consultations</p>
+            <p className="font-semibold">Active Appointments</p>
             <p className="text-lg text-gray-700">
               {isSignedIn ? dashboardData.consultations ?? "Loading..." : "0"}
             </p>
