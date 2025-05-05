@@ -14,6 +14,7 @@ import EditProfile from "./pages/EditProfile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Preferences from "./pages/Preferences";
 import UserDetail from "./pages/UserDetail";
+import Ratings from "./pages/Ratings";
 
 const routes = () => [
   {
@@ -37,6 +38,7 @@ const routes = () => [
       { path: "edit-profile", element: <EditProfile /> },
       { path: "preferences", element: <Preferences /> },
       { path: "notifications", element: <Notifications /> },
+      { path: "rating", element: <Ratings /> },
       { path: "user-detail/:userType/:id", element: <UserDetail /> },
     ],
   },

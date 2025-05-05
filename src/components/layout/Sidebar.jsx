@@ -1,10 +1,10 @@
 import {
   LayoutDashboard,
-  MessageCircle,
   Briefcase,
   Users,
   DollarSign,
   ShieldAlert,
+  StarIcon,
   Settings,
   LogOut,
 } from "lucide-react";
@@ -112,6 +112,18 @@ export default function Sidebar() {
         >
           <ShieldAlert className="w-5 h-5" />
           <span>Notifications</span>
+        </NavLink>
+
+        <NavLink
+          to="/rating"
+          className={({ isActive }) =>
+            `flex items-center space-x-3 cursor-pointer ${
+              isActive ? "text-green-600" : "hover:text-green-600"
+            }`
+          }
+        >
+          <StarIcon className="w-5 h-5" />
+          <span>Rating</span>
         </NavLink>
 
         <NavLink

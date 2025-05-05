@@ -4,11 +4,24 @@ import { Card, CardContent } from "../components/ui/card";
 import { MessageSquare, AlertTriangle, CreditCard } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+} from "recharts";
 import Spinner from "../components/ui/Spinner";
 
 export default function Dashboard() {
   const { isSignedIn } = useAuth();
   const navigate = useNavigate();
+
+  const [appointments, setAppointments] = useState([]);
+  const [payments, setPayments] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!isSignedIn) {
@@ -16,88 +29,103 @@ export default function Dashboard() {
     }
   }, [isSignedIn, navigate]);
 
-  const [dashboardData, setDashboardData] = useState({
-    consultations: null,
-    conflicts: null,
-    payments: null,
-    earnings: null,
-  });
-
   useEffect(() => {
-    const fetchDashboardData = async () => {
+    const fetchData = async () => {
       try {
-        const res = await axios.get(
-          "https://expertly-zxb1.onrender.com/api/v1/api/admin/dashboard"
-        );
-        setDashboardData(res.data);
+        const [appointmentsRes, paymentsRes] = await Promise.all([
+          axios.get("https://expertly-zxb1.onrender.com/api/v1/appointment"),
+          axios.get("https://expertly-zxb1.onrender.com/api/v1/payment"),
+        ]);
+
+        setAppointments(appointmentsRes.data.data || []);
+        setPayments(paymentsRes.data.data || []);
       } catch (err) {
-        console.error("Failed to fetch dashboard data", err);
+        console.error("Error fetching dashboard data", err);
+      } finally {
+        setLoading(false);
       }
     };
 
     if (isSignedIn) {
-      fetchDashboardData();
+      fetchData();
     }
   }, [isSignedIn]);
 
+  // Calculations
+  const activeAppointments = appointments.appointments.length;
+  const totalPayments = payments.length;
+  const totalEarnings = payments.reduce(
+    (sum, p) => sum + (p.amountPaid || 0),
+    0
+  );
+
+  // Prepare data for earnings chart
+  const earningsChartData = payments.map((p) => ({
+    date: new Date(p.paymentDate).toLocaleDateString(),
+    earnings: p.amountPaid,
+  }));
+
   return (
-    <div className="grid grid-cols-3 gap-4 mb-8">
-      <Card>
-        <CardContent className="flex items-center space-x-4 p-4">
-          <MessageSquare className="text-green-600" />
-          <div>
-            <p className="font-semibold">Active Appointments</p>
-            <p className="text-lg text-gray-700">
-              {isSignedIn ? dashboardData.consultations ?? "Loading..." : "0"}
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardContent className="flex items-center space-x-4 p-4">
-          <AlertTriangle className="text-green-600" />
-          <div>
-            <p className="font-semibold">Conflicts</p>
-            <p className="text-lg text-gray-700">
-              {isSignedIn ? dashboardData.conflicts ?? "Loading..." : "0"}
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardContent className="flex items-center space-x-4 p-4">
-          <CreditCard className="text-green-600" />
-          <div>
-            <p className="font-semibold">Payments</p>
-            <p className="text-lg text-gray-700">
-              {isSignedIn ? `${dashboardData.payments ?? "Loading..."}` : "0"}
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="col-span-3">
-        <Card>
-          <CardContent className="p-6">
-            <h3 className="text-lg font-semibold mb-2">Earnings Status</h3>
-            {isSignedIn ? (
-              dashboardData.earnings ? (
-                <div className="h-64 bg-gray-100 rounded-md flex items-center justify-center text-gray-400">
-                  Earnings Graph Placeholder
+    <div className="p-6">
+      {loading ? (
+        <Spinner />
+      ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <Card>
+              <CardContent className="flex items-center space-x-4 p-4">
+                <MessageSquare className="text-green-600" />
+                <div>
+                  <p className="font-semibold">Appointments</p>
+                  <p className="text-lg text-gray-700">{activeAppointments}</p>
                 </div>
-              ) : (
-                <p>Loading earnings...</p>
-              )
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="flex items-center space-x-4 p-4">
+                <CreditCard className="text-green-600" />
+                <div>
+                  <p className="font-semibold">Payments</p>
+                  <p className="text-lg text-gray-700">{totalPayments}</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="flex items-center space-x-4 p-4">
+                <AlertTriangle className="text-green-600" />
+                <div>
+                  <p className="font-semibold">Total Earnings</p>
+                  <p className="text-lg text-gray-700">${totalEarnings}</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="bg-white rounded-lg p-6 shadow-md">
+            <h3 className="text-lg font-semibold mb-4">Earnings Over Time</h3>
+            {earningsChartData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={earningsChartData}>
+                  <CartesianGrid stroke="#e5e7eb" />
+                  <XAxis dataKey="date" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line
+                    type="monotone"
+                    dataKey="earnings"
+                    stroke="#10b981"
+                    strokeWidth={2}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
             ) : (
-              <div className="h-64 bg-gray-100 rounded-md flex items-center justify-center text-gray-400">
-                <p>Please sign in to view earnings graph.</p>
-              </div>
+              <p className="text-gray-500">No earnings data available.</p>
             )}
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
