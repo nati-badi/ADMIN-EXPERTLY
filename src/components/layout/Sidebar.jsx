@@ -123,7 +123,7 @@ export default function Sidebar() {
           }
         >
           <StarIcon className="w-5 h-5" />
-          <span>Rating</span>
+          <span>Ratings</span>
         </NavLink>
 
         <NavLink
