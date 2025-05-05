@@ -7,6 +7,10 @@ import {
   StarIcon,
   Settings,
   LogOut,
+  ChevronLeft,
+  ChevronRight,
+  FileText,
+  UserRoundPen,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -19,6 +23,7 @@ export default function Sidebar() {
   const { isSignedIn, setAdmin } = useAuth();
   const navigate = useNavigate();
   const [loggingOut, setLoggingOut] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   const handleLogout = async () => {
     setLoggingOut(true);
@@ -46,118 +51,108 @@ export default function Sidebar() {
     }
   };
 
+  const menuItems = [
+    {
+      to: "/dashboard",
+      icon: <LayoutDashboard className="w-5 h-5" />,
+      label: "Dashboard",
+    },
+    {
+      to: "/professionals",
+      icon: <Briefcase className="w-5 h-5" />,
+      label: "Professionals",
+    },
+    { to: "/users", icon: <Users className="w-5 h-5" />, label: "Users" },
+    {
+      to: "/payments",
+      icon: <DollarSign className="w-5 h-5" />,
+      label: "Payments",
+    },
+    {
+      to: "/notifications",
+      icon: <ShieldAlert className="w-5 h-5" />,
+      label: "Notifications",
+    },
+    { to: "/rating", icon: <StarIcon className="w-5 h-5" />, label: "Ratings" },
+    {
+      to: "/reports",
+      icon: <FileText className="w-5 h-5" />,
+      label: "Reports",
+    },
+    {
+      to: "/user-reports",
+      icon: <UserRoundPen className="w-5 h-5" />,
+      label: "User Reports",
+    },
+    {
+      to: "/settings",
+      icon: <Settings className="w-5 h-5" />,
+      label: "Settings",
+    },
+  ];
+
   return (
-    <aside className="w-64 bg-white shadow-md p-4">
-      <img
-        src="/expertly.jpg"
-        alt="Expertly Logo"
-        className="w-full h-20 mb-8 object-contain cursor-pointer"
-      />
-      <nav className="space-y-4 text-lg font-medium text-gray-700 pl-2">
-        <NavLink
-          to="/dashboard"
-          className={({ isActive }) =>
-            `flex items-center space-x-3 font-semibold cursor-pointer ${
-              isActive ? "text-green-600" : "hover:text-green-600"
-            }`
-          }
-        >
-          <LayoutDashboard className="w-5 h-5" />
-          <span>Dashboard</span>
-        </NavLink>
+    <aside
+      className={`h-full bg-white shadow-md p-4 transition-all duration-300 ${
+        collapsed ? "w-16" : "w-64"
+      } flex flex-col`}
+    >
+      {/* Toggle Button */}
+      <button
+        onClick={() => setCollapsed(!collapsed)}
+        className="self-end text-gray-500 hover:text-green-600 transition durations-900 cursor-pointer"
+      >
+        {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
+      </button>
 
-        <NavLink
-          to="/professionals"
-          className={({ isActive }) =>
-            `flex items-center space-x-3 cursor-pointer ${
-              isActive ? "text-green-600" : "hover:text-green-600"
-            }`
-          }
-        >
-          <Briefcase className="w-5 h-5" />
-          <span>Professionals</span>
-        </NavLink>
+      {/* Logo */}
+      {!collapsed && (
+        <img
+          src="/expertly.jpg"
+          alt="Expertly Logo"
+          className="w-full h-20 mb-5 object-contain cursor-pointer"
+        />
+      )}
 
-        <NavLink
-          to="/users"
-          className={({ isActive }) =>
-            `flex items-center space-x-3 cursor-pointer ${
-              isActive ? "text-green-600" : "hover:text-green-600"
-            }`
-          }
-        >
-          <Users className="w-5 h-5" />
-          <span>Users</span>
-        </NavLink>
-
-        <NavLink
-          to="/payments"
-          className={({ isActive }) =>
-            `flex items-center space-x-3 cursor-pointer ${
-              isActive ? "text-green-600" : "hover:text-green-600"
-            }`
-          }
-        >
-          <DollarSign className="w-5 h-5" />
-          <span>Payments</span>
-        </NavLink>
-
-        <NavLink
-          to="/notifications"
-          className={({ isActive }) =>
-            `flex items-center space-x-3 cursor-pointer ${
-              isActive ? "text-green-600" : "hover:text-green-600"
-            }`
-          }
-        >
-          <ShieldAlert className="w-5 h-5" />
-          <span>Notifications</span>
-        </NavLink>
-
-        <NavLink
-          to="/rating"
-          className={({ isActive }) =>
-            `flex items-center space-x-3 cursor-pointer ${
-              isActive ? "text-green-600" : "hover:text-green-600"
-            }`
-          }
-        >
-          <StarIcon className="w-5 h-5" />
-          <span>Ratings</span>
-        </NavLink>
-
-        <NavLink
-          to="/settings"
-          className={({ isActive }) =>
-            `flex items-center space-x-3 cursor-pointer ${
-              isActive ? "text-green-600" : "hover:text-green-600"
-            }`
-          }
-        >
-          <Settings className="w-5 h-5" />
-          <span>Settings</span>
-        </NavLink>
+      {/* Navigation */}
+      <nav className="space-y-4 text-lg font-medium text-gray-700">
+        {menuItems.map(({ to, icon, label }) => (
+          <NavLink
+            to={to}
+            key={label}
+            className={({ isActive }) =>
+              `flex items-center space-x-3 px-2 py-2 rounded-md transition ${
+                isActive ? "text-green-600" : "hover:text-green-600"
+              }`
+            }
+            title={collapsed ? label : undefined}
+          >
+            {icon}
+            {!collapsed && <span>{label}</span>}
+          </NavLink>
+        ))}
 
         <hr className="border-t border-gray-300 my-4" />
 
-        {isSignedIn ? (
+        {/* Logout */}
+        {isSignedIn && (
           <button
             onClick={handleLogout}
             disabled={loggingOut}
-            className={`flex items-center space-x-2 cursor-pointer transition ${
+            className={`flex items-center space-x-2 px-2 py-2 rounded-md transition ${
               loggingOut ? "text-gray-400" : "text-red-500 hover:text-red-700"
             }`}
+            title={collapsed ? "Logout" : undefined}
           >
             <LogOut className="w-5 h-5" />
-            {loggingOut ? (
-              <>
+            {!collapsed &&
+              (loggingOut ? (
                 <Spinner size={5} className="w-4 h-4 animate-spin" />
-              </>
-            ) : (
-              <span>Logout</span>
-            )}
+              ) : (
+                <span>Logout</span>
+              ))}
           </button>
-        ) : null}
+        )}
       </nav>
     </aside>
   );

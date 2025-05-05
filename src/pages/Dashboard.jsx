@@ -37,7 +37,7 @@ export default function Dashboard() {
           axios.get("https://expertly-zxb1.onrender.com/api/v1/payment"),
         ]);
 
-        setAppointments(appointmentsRes.data.data || []);
+        setAppointments(appointmentsRes.data.data.appointments || []);
         setPayments(paymentsRes.data.data || []);
       } catch (err) {
         console.error("Error fetching dashboard data", err);
@@ -52,7 +52,7 @@ export default function Dashboard() {
   }, [isSignedIn]);
 
   // Calculations
-  const activeAppointments = appointments.appointments.length;
+  const activeAppointments = appointments.length;
   const totalPayments = payments.length;
   const totalEarnings = payments.reduce(
     (sum, p) => sum + (p.amountPaid || 0),
@@ -68,7 +68,9 @@ export default function Dashboard() {
   return (
     <div className="p-6">
       {loading ? (
-        <Spinner />
+        <div className="flex items-center justify-center h-[80vh]">
+          <Spinner />
+        </div>
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">

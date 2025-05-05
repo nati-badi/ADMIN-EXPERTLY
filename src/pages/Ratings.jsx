@@ -18,10 +18,13 @@ const Ratings = () => {
         const res = await axios.get(
           "https://expertly-zxb1.onrender.com/api/v1/rating"
         );
-        setRatings(res.data?.data || []);
-        setFiltered(res.data?.data || []);
+        const data = res.data?.data;
+        setRatings(Array.isArray(data) ? data : []);
+        setFiltered(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error("Failed to fetch ratings:", err);
+        setRatings([]);
+        setFiltered([]);
       } finally {
         setLoading(false);
       }
@@ -74,8 +77,12 @@ const Ratings = () => {
       </div>
 
       {loading ? (
-        <div className="flex justify-center p-6">
-          <Spinner />
+        <div className="flex items-center justify-center h-full">
+          {" "}
+          {/* Added items-center and h-full */}
+          <div className="flex justify-center p-6">
+            <Spinner />
+          </div>
         </div>
       ) : filtered.length === 0 ? (
         <p className="text-gray-500">No ratings found.</p>

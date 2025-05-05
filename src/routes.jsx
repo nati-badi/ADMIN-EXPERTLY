@@ -15,6 +15,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Preferences from "./pages/Preferences";
 import UserDetail from "./pages/UserDetail";
 import Ratings from "./pages/Ratings";
+import Reports from "./pages/Reports";
+import UserReports from "./pages/UserReports";
 
 const routes = () => [
   {
@@ -39,6 +41,8 @@ const routes = () => [
       { path: "preferences", element: <Preferences /> },
       { path: "notifications", element: <Notifications /> },
       { path: "rating", element: <Ratings /> },
+      { path: "/reports", element: <Reports /> },
+      { path: "/user-reports", element: <UserReports /> },
       { path: "user-detail/:userType/:id", element: <UserDetail /> },
     ],
   },
